@@ -27,7 +27,6 @@ class consumer_route(AsyncWebsocketConsumer):
         user1=self.scope['user']
         print(self.scope['user'])
         self.room_group_name=f"room_{room_id}"
-        await self.accept()
 
         try:
             print('id',user1.id,' room-Id',room_id)
@@ -39,6 +38,7 @@ class consumer_route(AsyncWebsocketConsumer):
         if not is_member:
             await self.close(code=4003)
             return
+        await self.accept()
         try:
             await self.channel_layer.group_add(
             self.room_group_name,
@@ -75,6 +75,7 @@ class consumer_route(AsyncWebsocketConsumer):
                     "is_read":message_obj.is_read,
                     "sender_id":message_obj.sender_id_id,
                     "timestamp":message_obj.timestamp.isoformat(),
+                    "room_id":message_obj.room_id_id
                 }
                 await self.channel_layer.group_send(
                     self.room_group_name,
