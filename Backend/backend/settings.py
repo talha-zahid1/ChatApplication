@@ -32,10 +32,10 @@ ALLOWED_HOSTS = [
 CORS_ALLOWED_ORIGINS=[
     "http://localhost:5173"
 ]
-from  decouple import Config
+from  decouple import config
 
-SECRET_KEY=Config('SECRET_KEY')
-DEBUG=Config('DEBUG',cast=bool)
+SECRET_KEY=config('SECRET_KEY')
+DEBUG=config('DEBUG',cast=bool)
 
 
 
