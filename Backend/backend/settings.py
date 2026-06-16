@@ -27,7 +27,7 @@ MEDIA_ROOT=BASE_DIR/'media/'
  
 
 ALLOWED_HOSTS = [
-    "localhost","127.0.0.1",
+    "localhost","127.0.0.1", "chatapplication-production-c919.up.railway.app",
 ]
 CORS_ALLOWED_ORIGINS=[
     "http://localhost:5173",
