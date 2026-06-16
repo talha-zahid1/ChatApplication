@@ -97,11 +97,12 @@ export const useChat = (roomId: number | null, currentUserId: number | undefined
   }, [roomId, nextCursor, loadingMore, currentUserId]);
 
   const addMessage = useCallback((message: ChatMessage) => {
+    if (message.room_id !== roomId) return;
     setMessages((prev) => {
       if (prev.some((m) => m.message_id === message.message_id)) return prev;
       return [...prev, message];
     });
-  }, []);
+  }, [roomId]);
 
   const markMessageAsRead = useCallback((messageId: number) => {
     setMessages((prev) =>

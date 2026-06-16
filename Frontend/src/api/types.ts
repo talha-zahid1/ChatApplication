@@ -32,6 +32,7 @@ export interface ChatMessage {
   is_read: boolean;
   sender_id: number;
   timestamp: string;
+  room_id: number;
 }
 
 export interface PaginatedMessages {
