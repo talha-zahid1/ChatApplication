@@ -25,14 +25,11 @@ class consumer_route(AsyncWebsocketConsumer):
         room_id=self.scope['url_route']['kwargs']['room_id']
         
         user1=self.scope['user']
-        print(self.scope['user'])
         self.room_group_name=f"room_{room_id}"
 
         try:
-            print('id',user1.id,' room-Id',room_id)
             is_member=await self.check_grp_members(user1=user1.id,room_id=room_id)
         except Exception as e:
-            print('exception',e)
             await self.close(code=4003)
             return
         if not is_member:
