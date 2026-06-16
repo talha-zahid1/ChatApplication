@@ -21,10 +21,10 @@ MEDIA_ROOT=BASE_DIR/'media/'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-f9a!j%e2t(gt!k#=yx!261^jc6hf2*r4)h9-kppvmz%=c)j0cj'
+ 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+ 
 
 ALLOWED_HOSTS = [
     "localhost","127.0.0.1",
@@ -32,6 +32,12 @@ ALLOWED_HOSTS = [
 CORS_ALLOWED_ORIGINS=[
     "http://localhost:5173"
 ]
+from  decouple import Config
+
+SECRET_KEY=Config('SECRET_KEY')
+DEBUG=Config('DEBUG',cast=bool)
+
+
 
 # Application definition
 
