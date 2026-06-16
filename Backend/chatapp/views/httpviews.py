@@ -446,14 +446,15 @@ class inbox_view(APIView):
         )
         latest_messages = []
         for room in rooms:
-            if room.last_sender_id:
+            if room.last_sender_id is None:
+                continue
+            elif room.last_sender_id:
                 rec_id = list(
                     room.members.exclude(id=room.last_sender_id).values_list(
                         "id", flat=True
                     )
                 )
-            else:
-                rec_id = []
+            
             latest_messages.append(
                 {
                     "message": room.last_message,
