@@ -9,7 +9,6 @@ export interface UseWebSocketOptions {
 
 const isChatMessage = (value: unknown): value is ChatMessage => {
   if (!value || typeof value !== 'object') return false;
-
   const candidate = value as Partial<ChatMessage>;
   return (
     typeof candidate.message_id === 'number' &&
@@ -39,22 +38,24 @@ export const useWebSocket = ({ roomId, onMessage }: UseWebSocketOptions) => {
       return;
     }
 
-    const token = tokenStorage.getAccessToken();
-    if (!token) {
-      setStatus('DISCONNECTED');
-      return;
-    }
-
     manualCloseRef.current = false;
     retryCountRef.current = 0;
 
     const baseUrl =
       import.meta.env.VITE_WS_BASE_URL || 'ws://localhost:8000/chatApplication/ws/chat';
-    const wsUrl = `${baseUrl}/${roomId}/?token=${encodeURIComponent(token)}`;
 
     const createSocket = () => {
-      const token = tokenStorage.getAccessToken();
-      if (!token || manualCloseRef.current) return;
+      if (manualCloseRef.current) return;
+
+      // ✅ Har baar fresh token lo — stale closure nahi
+      const freshToken = tokenStorage.getAccessToken();
+      if (!freshToken) {
+        setStatus('DISCONNECTED');
+        return;
+      }
+
+      // ✅ Har retry pe fresh URL banta hai
+      const wsUrl = `${baseUrl}/${roomId}/?token=${encodeURIComponent(freshToken)}`;
 
       setStatus('CONNECTING');
 
@@ -87,7 +88,6 @@ export const useWebSocket = ({ roomId, onMessage }: UseWebSocketOptions) => {
         }
       };
 
-      // ✅ event parameter add kiya — 4003 pe retry nahi hogi
       socket.onclose = (event) => {
         setStatus('DISCONNECTED');
 
@@ -97,8 +97,6 @@ export const useWebSocket = ({ roomId, onMessage }: UseWebSocketOptions) => {
         }
 
         if (manualCloseRef.current) return;
-
-        // ✅ Room exist nahi karta ya member nahi — retry mat karo
         if (event.code === 4003) return;
 
         const delay = Math.min(1000 * Math.pow(2, retryCountRef.current), 30000);
