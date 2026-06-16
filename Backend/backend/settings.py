@@ -32,6 +32,7 @@ ALLOWED_HOSTS = [
 CORS_ALLOWED_ORIGINS=[
     "http://localhost:5173",
      "https://chat-application-pi-rose.vercel.app",
+    "https://chat-application-git-main-talhazahidse-2875s-projects.vercel.app",
 ]
 import os
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-default-key')
