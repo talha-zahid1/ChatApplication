@@ -105,15 +105,16 @@ export const ChatArea = () => {
   };
 
   const handleIncomingMessage = useCallback(
-    (incomingMsg: ChatMessage) => {
-      if (!user) return;
-      addMessage(incomingMsg);
-      if (activeRoomId && incomingMsg.sender_id !== user.id && !incomingMsg.is_read) {
-        chatApi.markSeen([incomingMsg.message_id]).catch(console.error);
-      }
-    },
-    [addMessage, user, activeRoomId]
-  );
+  (incomingMsg: ChatMessage) => {
+    console.log('room_id in msg:', incomingMsg.room_id, '| active room:', activeRoomId);
+    if (!user) return;
+    addMessage(incomingMsg);
+    if (activeRoomId && incomingMsg.sender_id !== user.id && !incomingMsg.is_read) {
+      chatApi.markSeen([incomingMsg.message_id]).catch(console.error);
+    }
+  },
+  [addMessage, user, activeRoomId]
+);
 
   const { sendMessage, status: wsStatus } = useWebSocket({ roomId: activeRoomId, onMessage: handleIncomingMessage });
 
