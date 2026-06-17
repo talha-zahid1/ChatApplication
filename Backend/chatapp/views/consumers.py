@@ -71,6 +71,7 @@ class consumer_route(AsyncWebsocketConsumer):
                     "message":message_obj.message,
                     "is_read":message_obj.is_read,
                     "sender_id":message_obj.sender_id_id,
+                    "sender_username":message_obj.sender_id.username,
                     "timestamp":message_obj.timestamp.isoformat(),
                     "room_id":message_obj.room_id_id
                 }

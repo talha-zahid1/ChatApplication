@@ -496,6 +496,7 @@ class get_messages(APIView):
                 "message": m.message,
                 "is_read": m.is_read,
                 "sender_id": m.sender_id.id,
+                "sender_username":m.sender_id.username,
                 "timestamp": m.timestamp,
             }
             for m in result
