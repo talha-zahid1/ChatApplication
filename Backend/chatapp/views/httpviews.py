@@ -488,9 +488,8 @@ class get_messages(APIView):
         result = paginator.paginate_queryset(msgs, req)
 
         if not result:
-            return Response(
-                {"status": False, "message": "No Conversation Found"}, status=404
-            )
+             result = []
+
         data = [
             {
                 "message_id":m.chat_id,
