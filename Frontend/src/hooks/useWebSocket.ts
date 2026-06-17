@@ -19,6 +19,32 @@ const isChatMessage = (value: unknown): value is ChatMessage => {
   );
 };
 
+// ✅ Token refresh karne ki utility — WS connect se pehle call hoti hai
+const refreshAccessToken = async (): Promise<string | null> => {
+  const refreshToken = tokenStorage.getRefreshToken();
+  if (!refreshToken) return null;
+
+  try {
+    const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+    const res = await fetch(`${apiBase}/api/token/refresh/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refresh: refreshToken }),
+    });
+
+    if (!res.ok) return null;
+
+    const data = await res.json();
+    if (data.access) {
+      tokenStorage.setAccessToken(data.access);
+      return data.access;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+};
+
 export const useWebSocket = ({ roomId, onMessage }: UseWebSocketOptions) => {
   const [status, setStatus] = useState<'CONNECTING' | 'CONNECTED' | 'DISCONNECTED'>('DISCONNECTED');
   const wsRef = useRef<WebSocket | null>(null);
@@ -44,17 +70,24 @@ export const useWebSocket = ({ roomId, onMessage }: UseWebSocketOptions) => {
     const baseUrl =
       import.meta.env.VITE_WS_BASE_URL || 'ws://localhost:8000/chatApplication/ws/chat';
 
-    const createSocket = () => {
+    // ✅ Async function — connect se pehle fresh token ensure karta hai
+    const createSocket = async () => {
       if (manualCloseRef.current) return;
 
-      // ✅ Har baar fresh token lo — stale closure nahi
-      const freshToken = tokenStorage.getAccessToken();
+      // Step 1: Pehle refresh karo
+      let freshToken = await refreshAccessToken();
+
+      // Step 2: Agar refresh fail hua toh storage wala try karo
+      if (!freshToken) {
+        freshToken = tokenStorage.getAccessToken();
+      }
+
+      // Step 3: Koi token nahi toh disconnect
       if (!freshToken) {
         setStatus('DISCONNECTED');
         return;
       }
 
-      // ✅ Har retry pe fresh URL banta hai
       const wsUrl = `${baseUrl}/${roomId}/?token=${encodeURIComponent(freshToken)}`;
 
       setStatus('CONNECTING');
@@ -105,6 +138,7 @@ export const useWebSocket = ({ roomId, onMessage }: UseWebSocketOptions) => {
         if (reconnectTimeoutRef.current) {
           window.clearTimeout(reconnectTimeoutRef.current);
         }
+        // ✅ Reconnect pe bhi fresh token milega (async createSocket)
         reconnectTimeoutRef.current = window.setTimeout(() => {
           createSocket();
         }, delay);
