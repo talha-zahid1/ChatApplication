@@ -225,18 +225,18 @@ export const Sidebar = () => {
   };
 
   const getRoomAvatarProps = (item: InboxItem) => {
-  const members = membersCache[item.room_id];
-  if (item.is_group) return { isGroup: true };
-  if (members && user) {
-    const otherUser = members.find(m => m.id !== user.id);
-    if (otherUser) return { username: otherUser.username, userId: otherUser.id, src: item.other_profile_pic };
-  }
-  if (user) {
-    const otherId = item.rec_id.find(id => id !== user.id) || item.rec_id[0] || 0;
-    return { username: `User #${otherId}`, userId: otherId, src: item.other_profile_pic };
-  }
-  return { username: 'Chat', userId: 0, src: item.other_profile_pic };
-};
+    const members = membersCache[item.room_id];
+    if (item.is_group) return { isGroup: true };
+    if (members && user) {
+      const otherUser = members.find(m => m.id !== user.id);
+      if (otherUser) return { username: otherUser.username, userId: otherUser.id };
+    }
+    if (user) {
+      const otherId = item.rec_id.find(id => id !== user.id) || item.rec_id[0] || 0;
+      return { username: `User #${otherId}`, userId: otherId };
+    }
+    return { username: 'Chat', userId: 0 };
+  };
 
   const filteredInbox = inboxItems.filter((item) => {
     const roomName = getRoomName(item).toLowerCase();
