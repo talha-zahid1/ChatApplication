@@ -1,7 +1,7 @@
 .layoutContainer {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100dvh;
   width: 100vw;
   background-color: var(--bg-primary);
   position: relative;
@@ -91,7 +91,7 @@
   display: flex;
   flex: 1;
   overflow: hidden;
-  height: calc(100vh - 64px);
+  height: calc(100dvh - 64px);
   width: 100vw;
 }
 
