@@ -24,6 +24,7 @@ export interface InboxItem {
   rec_id: number[];
   is_group: boolean;
   group_name: string | null;  // ✅ added
+  other_profile_pic: string | null;
 }
 
 export interface ChatMessage {
