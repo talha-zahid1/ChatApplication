@@ -164,11 +164,6 @@ class profile_view(APIView):
             return Response(
                 {"status": False, "message": "Profile pic Required"}, status=400
             )
-        old_file=pf.profile_pic
-        if old_file:
-            old_file_path=os.path.join(settings.MEDIA_ROOT,old_file.name)
-            if os.path.exists(old_file_path):
-                os.remove(old_file_path)
         pf.profile_pic = file
         pf.save()
         print(pf.profile_pic.url)
