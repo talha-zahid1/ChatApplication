@@ -31,6 +31,7 @@ export interface ChatMessage {
   message: string;
   is_read: boolean;
   sender_id: number;
+  sender_username: string;
   timestamp: string;
   room_id: number;
 }

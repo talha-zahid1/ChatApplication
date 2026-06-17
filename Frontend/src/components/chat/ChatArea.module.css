@@ -467,7 +467,14 @@
   width: 100%;
   box-sizing: border-box;
 }
-
+.senderName {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #a78bfa;
+  margin-bottom: 3px;
+  padding-left: 2px;
+}
 .inputForm {
   display: flex;
   align-items: center;

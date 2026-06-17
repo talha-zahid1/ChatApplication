@@ -105,16 +105,16 @@ export const ChatArea = () => {
   };
 
   const handleIncomingMessage = useCallback(
-  (incomingMsg: ChatMessage) => {
-    console.log('room_id in msg:', incomingMsg.room_id, '| active room:', activeRoomId);
-    if (!user) return;
-    addMessage(incomingMsg);
-    if (activeRoomId && incomingMsg.sender_id !== user.id && !incomingMsg.is_read) {
-      chatApi.markSeen([incomingMsg.message_id]).catch(console.error);
-    }
-  },
-  [addMessage, user, activeRoomId]
-);
+    (incomingMsg: ChatMessage) => {
+      console.log('room_id in msg:', incomingMsg.room_id, '| active room:', activeRoomId);
+      if (!user) return;
+      addMessage(incomingMsg);
+      if (activeRoomId && incomingMsg.sender_id !== user.id && !incomingMsg.is_read) {
+        chatApi.markSeen([incomingMsg.message_id]).catch(console.error);
+      }
+    },
+    [addMessage, user, activeRoomId]
+  );
 
   const { sendMessage, status: wsStatus } = useWebSocket({ roomId: activeRoomId, onMessage: handleIncomingMessage });
 
@@ -406,6 +406,14 @@ export const ChatArea = () => {
                         <Trash2 size={12} />
                       </button>
                     )}
+
+                    {/* ✅ Sirf group mein, sirf doosron ke messages pe sender naam dikhao */}
+                    {isGroup && !isMine && (
+                      <span className={styles.senderName}>
+                        {msg.sender_username}
+                      </span>
+                    )}
+
                     <div className={styles.bubbleContent}>
                       {isMediaUrl(msg.message) ? renderMediaMessage(msg.message) : <p className={styles.messageText}>{msg.message}</p>}
                     </div>
@@ -460,7 +468,6 @@ export const ChatArea = () => {
               <Avatar size={80} {...getChatHeaderAvatarProps()} />
               <h2 className={styles.detailsName}>{getChatHeaderName()}</h2>
 
-              {/* ✅ DM ke liye email show karo */}
               {!isGroup && user && (() => {
                 const other = roomMembers.find(m => m.id !== user.id);
                 return other?.email ? (
@@ -468,7 +475,6 @@ export const ChatArea = () => {
                 ) : null;
               })()}
 
-              {/* Group ke liye member count */}
               {isGroup && (
                 <p className={styles.detailsMemberCount}>
                   {roomMembers.length} member{roomMembers.length !== 1 ? 's' : ''}
