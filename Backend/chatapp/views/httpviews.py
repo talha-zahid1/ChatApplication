@@ -449,12 +449,7 @@ class inbox_view(APIView):
                         "id", flat=True
                     )
                 )
-            
-            pic=None
-            if not room.is_group and rec_id:
-                prof=profile.objects.filter(user_id__in=rec_id).first()
-                if prof and prof.profile_pic:
-                    pic=prof.profile_pic.url
+        
 
             
 
@@ -466,7 +461,6 @@ class inbox_view(APIView):
                     "rec_id": rec_id,
                     "is_group": room.is_group,
                     "group_name":room.name if room.is_group else  None ,
-                    "other_profile_pic":pic
                 }
             )
 
